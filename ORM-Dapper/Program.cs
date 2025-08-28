@@ -14,8 +14,39 @@ namespace ORM_Dapper
             string connString = config.GetConnectionString("DefaultConnection");
 
             IDbConnection conn = new MySqlConnection(connString);
+
+            var DepartRepo = new DapperDepartmentRepository(conn);
             
+            Console.WriteLine("Please enter Department Name you would like to add!");
+            var userNewDepartInput = Console.ReadLine();
+            DepartRepo.InsertDepartmentMethod(userNewDepartInput);
+            DepartRepo.GetAllDepartments().ToList().ForEach(x=>Console.WriteLine($"{x.DepartmentID} {x.Name}"));
+
+            var productsRepo = new DapperProductsRepository(conn);
+
+            var maxCount = productsRepo.GetProductMax().ProductID;
+            Console.WriteLine(maxCount);
             
+            Console.WriteLine($"{productsRepo.GetProduct(maxCount).Name} | {productsRepo.GetProduct(maxCount).Price} | {productsRepo.GetProduct(maxCount).ProductID}");
+            productsRepo.DeleteProduct(maxCount);
+            
+            // Products prodNumber = productsRepo.GetProduct(maxCount);
+            //
+            // productsRepo.DeleteProduct2(prodNumber);
+            
+            var productToUpdate = productsRepo.GetProduct(500);
+            Console.WriteLine($"{productToUpdate.Name} | {productToUpdate.Price} | {productToUpdate.ProductID}");
+            
+            productToUpdate.Name="UPDATED";
+            productToUpdate.Price = 100.00;
+            productToUpdate.StockLevel = 99;
+            productToUpdate.CategoryID = 2;
+            productToUpdate.OnSale = true;
+            
+            productsRepo.UpdateProduct(productToUpdate);
+            
+            productsRepo.GetAllProducts().ToList()
+                .ForEach(x=>Console.WriteLine($"{x.Name} | {x.ProductID} | {x.Price} | {x.CategoryID} | {x.StockLevel}"));
 
         }
     }

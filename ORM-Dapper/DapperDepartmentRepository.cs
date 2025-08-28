@@ -10,7 +10,7 @@ namespace ORM_Dapper
 
         public DapperDepartmentRepository(IDbConnection connection)
         {
-            connection = _connection;
+            _connection = connection;
         }
 
         public IEnumerable<Department> GetAllDepartments()
@@ -21,8 +21,10 @@ namespace ORM_Dapper
         public void InsertDepartmentMethod(string name)
         {
             _connection.Execute("INSERT INTO DEPARTMENTS (Name) VALUES (@name);",
-                new {name=name  });
+                new {name=name});
         }
+        
+       
     }
 
 }
