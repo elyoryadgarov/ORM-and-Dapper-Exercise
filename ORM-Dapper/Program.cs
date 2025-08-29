@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 
@@ -17,10 +18,10 @@ namespace ORM_Dapper
 
             var DepartRepo = new DapperDepartmentRepository(conn);
             
-            Console.WriteLine("Please enter Department Name you would like to add!");
-            var userNewDepartInput = Console.ReadLine();
-            DepartRepo.InsertDepartmentMethod(userNewDepartInput);
-            DepartRepo.GetAllDepartments().ToList().ForEach(x=>Console.WriteLine($"{x.DepartmentID} {x.Name}"));
+            // Console.WriteLine("Please enter Department Name you would like to add!");
+            // var userNewDepartInput = Console.ReadLine();
+            // DepartRepo.InsertDepartmentMethod(userNewDepartInput);
+            // DepartRepo.GetAllDepartments().ToList().ForEach(x=>Console.WriteLine($"{x.DepartmentID} {x.Name}"));
 
             var productsRepo = new DapperProductsRepository(conn);
 
@@ -33,20 +34,30 @@ namespace ORM_Dapper
             // Products prodNumber = productsRepo.GetProduct(maxCount);
             //
             // productsRepo.DeleteProduct2(prodNumber);
-            
-            var productToUpdate = productsRepo.GetProduct(500);
+            Random rand = new Random();
+            int randomNumber = rand.Next(1, maxCount);
+            Console.WriteLine($"Random Number is: {randomNumber}");
+            var checkNull = productsRepo.GetProduct(randomNumber).Name;
+
+            while (checkNull==null)
+            {
+                Console.WriteLine($"{productsRepo.GetProduct(maxCount).Name}");
+                randomNumber = rand.Next(1, maxCount);
+            }
+
+            var productToUpdate = productsRepo.GetProduct(randomNumber);
             Console.WriteLine($"{productToUpdate.Name} | {productToUpdate.Price} | {productToUpdate.ProductID}");
             
-            productToUpdate.Name="UPDATED";
-            productToUpdate.Price = 100.00;
-            productToUpdate.StockLevel = 99;
-            productToUpdate.CategoryID = 2;
-            productToUpdate.OnSale = true;
-            
-            productsRepo.UpdateProduct(productToUpdate);
-            
-            productsRepo.GetAllProducts().ToList()
-                .ForEach(x=>Console.WriteLine($"{x.Name} | {x.ProductID} | {x.Price} | {x.CategoryID} | {x.StockLevel}"));
+            // productToUpdate.Name="UPDATED";
+            // productToUpdate.Price = 100.00;
+            // productToUpdate.StockLevel = 99;
+            // productToUpdate.CategoryID = 2;
+            // productToUpdate.OnSale = true;
+            //
+            // productsRepo.UpdateProduct(productToUpdate);
+            //
+            // productsRepo.GetAllProducts().ToList()
+            //     .ForEach(x=>Console.WriteLine($"{x.Name} | {x.ProductID} | {x.Price} | {x.CategoryID} | {x.StockLevel}"));
 
         }
     }
